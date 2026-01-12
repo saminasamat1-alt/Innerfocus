@@ -87,8 +87,8 @@ export default function App() {
   const textColor = sessionType === SessionType.Work ? 'text-sky-800' : 'text-teal-800';
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-500 ${bgColor} ${textColor}`}>
-      <main className="w-full max-w-md mx-auto flex flex-col items-center text-center">
+    <div className={`flex flex-col items-center justify-center min-h-[100dvh] transition-colors duration-500 safe-area-padding ${bgColor} ${textColor}`}>
+      <main className="w-full max-w-md mx-auto flex flex-col items-center text-center px-4">
         <header className="w-full flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">InnerFocus</h1>
           <button onClick={() => setIsSettingsOpen(true)} className="p-2 rounded-full hover:bg-black/10 transition-colors">
