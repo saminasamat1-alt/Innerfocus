@@ -6,17 +6,20 @@
     {
       "src": "/icon-192x192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512x512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#eff6ff",
-  "background_color": "#eff6ff",
+  "theme_color": "#f0f9ff",
+  "background_color": "#f0f9ff",
   "description": "A thoughtful productivity tool for focus without pressure."
 }

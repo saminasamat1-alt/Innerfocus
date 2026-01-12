@@ -1,6 +1,6 @@
 
-const CACHE_NAME = 'innerfocus-cache-v1';
-const URLS_TO_CACHE = [
+const CACHE_NAME = 'innerfocus-cache-v2';
+const APP_SHELL_URLS = [
   '/',
   '/index.html',
   '/manifest.json',
@@ -13,21 +13,53 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(URLS_TO_CACHE);
+        return cache.addAll(APP_SHELL_URLS);
       })
   );
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
+  const { request } = event;
+
+  if (request.method !== 'GET') {
+    return;
+  }
+  
+  // Network-first for HTML pages
+  if (request.headers.get('accept').includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, responseToCache);
+          });
           return response;
-        }
-        return fetch(event.request);
-      }
-    )
+        })
+        .catch(() => {
+          return caches.match(request);
+        })
+    );
+    return;
+  }
+  
+  // Stale-while-revalidate for other assets
+  event.respondWith(
+    caches.match(request).then(cachedResponse => {
+      const fetchPromise = fetch(request).then(networkResponse => {
+        caches.open(CACHE_NAME).then(cache => {
+          if (networkResponse.ok) {
+            cache.put(request, networkResponse.clone());
+          }
+        });
+        return networkResponse;
+      }).catch(err => {
+        console.error('Fetch failed:', err);
+        throw err;
+      });
+
+      return cachedResponse || fetchPromise;
+    })
   );
 });
 
